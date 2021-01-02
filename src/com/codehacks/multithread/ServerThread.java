@@ -9,16 +9,18 @@ import java.net.Socket;
 public class ServerThread implements Runnable {
 
     private Socket socket;
+    private ServerMain serverMain;
 
-    public ServerThread(Socket socket) {
+    public ServerThread(Socket socket, ServerMain main) {
         this.socket = socket;
+        this.serverMain = main;
     }
 
     @Override
     public void run() {
         try {
-            
-            System.out.println("Client has connected.");
+            int client_num = serverMain.getClientNumber();
+            System.out.println("Client " + client_num + " has connected.");
             
             // I/O Buffers
             BufferedReader in_socket = new BufferedReader(
@@ -27,13 +29,13 @@ public class ServerThread implements Runnable {
             PrintWriter out_socket = new PrintWriter(
                     new OutputStreamWriter(socket.getOutputStream()), true);
 
-            out_socket.println("Welcome to 2021, What's your name? "); // Send "Welcome to the client
+            out_socket.println("Welcome, You are client " + client_num + ". What's your name? "); // Send "Welcome to the client
             String msg_from_client = in_socket.readLine();
             System.out.println("Client says: " + msg_from_client);  // Displays client's msg in console
 
             // close the socket
             socket.close();
-            System.out.println("Socket is closed.");
+            System.out.println("Client " + client_num + " has disconnected.");
 
         } catch (Exception e) {
             e.printStackTrace();
